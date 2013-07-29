@@ -3,7 +3,9 @@ from maya_tools import MayaTools
 
 class MayaCommand(sublime_plugin.TextCommand, MayaTools):
     def run(self, edit):
-        self.view.run_command("select_all")
+        if len(self.view.sel()[0]) == 0:
+            self.view.run_command("select_all")
         sels = self.view.sel()
-        command = self.view.substr(sels[0])
-        self.SendCommand(command)
+        for sel in sels:
+            command = self.view.substr(sel)
+            self.SendCommand(command)
