@@ -1,4 +1,4 @@
-import socket, sys, os
+import socket, sys, os, tempfile
 
 HOST = '127.0.0.1' # the local host
 PORT = 6001 # The same port as used by the server
@@ -10,13 +10,13 @@ class MayaTools:
         # command = self.compressCommandToOneLine(command)
 
         # Save selectedText out to temp file
-        tempFileSavePath = '/tmp/'
+        tempFileSavePath = tempfile.gettempdir()
         tempFilePath = os.path.join(tempFileSavePath, 'mayacode.py')
         pythonFile = open(tempFilePath, 'w')
         pythonFile.write(selectedText)
         pythonFile.close()
 
-        command = 'python(\"import imp;fp, pathname, description = imp.find_module(\'mayacode\', [\'/tmp/\']);imp.load_module(\'mayacode\', fp, pathname, description);reload(mayacode)\");'
+        command = 'python(\"import imp;fp, pathname, description = imp.find_module(\'mayacode\', [\'' + tempFileSavePath +  '/\']);imp.load_module(\'mayacode\', fp, pathname, description);reload(mayacode)\");'
 
         print command
         client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
